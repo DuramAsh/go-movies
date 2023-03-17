@@ -1,8 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"github.com/duramash/go-movies/server"
+)
 
 func main() {
-	RunServer()
-	fmt.Println("Working")
+	server.RunServer()
 }
