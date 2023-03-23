@@ -1,24 +1,21 @@
 package server
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
-	"time"
 )
 
+var db = GetDB()
+
+func getMovies(w http.ResponseWriter, r *http.Request) {
+	var movies []Movie
+	db.Find(&movies)
+	json.NewEncoder(w).Encode(movies)
+}
+
 func RunServer() {
-	server := &http.Server{
-		Addr: ":8080",
-		//Handler:        myHandler,
-		ReadTimeout:    10 * time.Second,
-		WriteTimeout:   10 * time.Second,
-		MaxHeaderBytes: 1 << 20,
-	}
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("This is main page"))
-	})
+	http.HandleFunc("/getMovies", getMovies)
 	fmt.Println("Server is listening on port 8080...")
-	if err := server.ListenAndServe(); err != nil {
-		panic("Server is down")
-	}
+	http.ListenAndServe(":8080", nil)
 }
