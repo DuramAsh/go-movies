@@ -21,6 +21,6 @@ func GetDB() *gorm.DB {
 	if err != nil {
 		panic("no connection")
 	}
-	db.AutoMigrate(&models.Movie{})
+	_ = db.AutoMigrate(&models.Movie{})
 	return db
 }

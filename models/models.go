@@ -1,14 +1,13 @@
 package models
 
-import "gorm.io/gorm"
-
 type Movie struct {
-	gorm.Model
-	Title  string  `json:"title"`
-	Rating float64 `json:"rating"`
+	UUID   string  `json:"uuid" gorm:"primaryKey"`
+	Title  string  `json:"title" binding:"required" gorm:"unique;not null"`
+	Rating float64 `json:"rating" binding:"required" gorm:"not null"`
 }
 
-type APIMovie struct {
+type UpdateMovie struct {
+	UUID   string  `json:"uuid"`
 	Title  string  `json:"title"`
 	Rating float64 `json:"rating"`
 }
