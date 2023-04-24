@@ -11,3 +11,13 @@ type UpdateMovie struct {
 	Title  string  `json:"title"`
 	Rating float64 `json:"rating"`
 }
+
+type UserInput struct {
+	Username string `json:"username" binding:"required" gorm:"primaryKey"`
+	Password string `json:"password" binding:"required" gorm:"not null"`
+}
+
+type User struct {
+	Username string `json:"username" binding:"required" gorm:"primaryKey"`
+	Password []byte `json:"password" binding:"required" gorm:"not null"`
+}
