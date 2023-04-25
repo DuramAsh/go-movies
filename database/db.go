@@ -23,5 +23,6 @@ func GetDB() *gorm.DB {
 	}
 	_ = db.AutoMigrate(&models.Movie{})
 	_ = db.AutoMigrate(&models.User{})
+	_ = db.AutoMigrate(&models.UserMovieThoughts{})
 	return db
 }

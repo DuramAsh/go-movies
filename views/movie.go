@@ -62,7 +62,7 @@ func DeleteMovieById(ctx *gin.Context) {
 func UpdateMovieById(ctx *gin.Context) {
 	id := ctx.Param("uuid")
 	movie := models.Movie{}
-	updates := models.UpdateMovie{}
+	updates := models.MovieInput{}
 	if err := DB.First(&movie, "uuid = ?", id).Error; err != nil {
 		util.HandleRequestError(ctx, http.StatusNotFound, err)
 		return

@@ -14,6 +14,10 @@ import (
 func SignUp(ctx *gin.Context) {
 	user := models.UserInput{}
 	_ = ctx.BindJSON(&user)
+	if !util.VerifyPassword(user.Password) {
+		util.HandleRequestError(ctx, http.StatusBadRequest, fmt.Errorf("wrong password format"))
+		return
+	}
 	dbUser := models.User{
 		Username: user.Username,
 		Password: util.HashPassword(&user),
@@ -25,7 +29,7 @@ func SignUp(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, dbUser)
 }
 
-func Login(ctx *gin.Context) {
+func SignIn(ctx *gin.Context) {
 	user := models.UserInput{}
 	_ = ctx.BindJSON(&user)
 	dbUser := models.User{}
@@ -38,10 +42,10 @@ func Login(ctx *gin.Context) {
 		return
 	}
 	token, _ := JWT.GenerateToken(user.Username)
-	tokens := make(map[string]interface{})
-	tokens["access"] = token
-	tokens["refresh"] = "to be implemented"
-	ctx.JSON(http.StatusOK, tokens)
+	ctx.JSON(http.StatusOK, gin.H{
+		"access":  token,
+		"refresh": "to be implemented",
+	})
 }
 
 func IdentifyUser(ctx *gin.Context) {
@@ -58,10 +62,12 @@ func IdentifyUser(ctx *gin.Context) {
 		return
 	}
 
-	_, err := JWT.ParseToken(headerInSlice[1])
+	claims, err := JWT.ParseToken(headerInSlice[1])
 	if err != nil {
 		util.HandleRequestError(ctx, http.StatusBadRequest, err)
 		ctx.Abort()
 		return
 	}
+	ctx.Set("username", claims["username"])
+	ctx.Next()
 }
